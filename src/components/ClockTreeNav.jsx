@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const NAV_ITEMS = [
-    { id: 'about', label: 'ABOUT', signal: 'clk_root', addr: '0x00' },
-    { id: 'synthesis', label: 'SYNTHESIS FLOW', signal: 'clk_synth', addr: '0x04' },
-    { id: 'floorplan', label: 'FLOORPLAN', signal: 'clk_fp', addr: '0x08' },
-    { id: 'waveform', label: 'WAVEFORM', signal: 'clk_sim', addr: '0x0C' },
-    { id: 'ip', label: 'EQUIVALENCE CHECK', signal: 'clk_ip', addr: '0x10' },
-    { id: 'contact', label: 'CONTACT', signal: 'clk_io', addr: '0x14' },
+    { id: 'about',     label: 'ABOUT',           signal: 'clk_root',    addr: '0x00' },
+    { id: 'synthesis', label: 'SYNTHESIS FLOW',  signal: 'clk_synth',   addr: '0x04' },
+    { id: 'floorplan', label: 'FLOORPLAN',       signal: 'clk_fp',      addr: '0x08' },
+    { id: 'waveform',  label: 'WAVEFORM',        signal: 'clk_sim',     addr: '0x0C' },
+    { id: 'game',      label: 'HW PUZZLE',       signal: 'clk_puzzle',  addr: '0x10' },
+    { id: 'ip',        label: 'PERSONAL CHIP',   signal: 'clk_ip',      addr: '0x14' },
+    { id: 'contact',   label: 'CONTACT',         signal: 'clk_io',      addr: '0x18' },
 ];
 
 export default function ClockTreeNav() {
