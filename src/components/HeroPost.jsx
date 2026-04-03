@@ -64,7 +64,7 @@ export default function HeroPost({ onBooted }) {
         <section
             id="about"
             ref={containerRef}
-            className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pl-[190px] md:pl-[220px]"
+            className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pl-0 md:pl-[220px] pt-14 md:pt-0"
             style={{ background: 'radial-gradient(ellipse at center, #050d05 0%, #050505 70%)' }}
         >
             {/* Grid background */}
@@ -95,14 +95,14 @@ export default function HeroPost({ onBooted }) {
             ))}
 
             {/* Header status bar */}
-            <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2 border-b border-eda-green border-opacity-20 text-xs text-eda-green text-opacity-50">
+            <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-4 md:px-8 py-2 border-b border-eda-green border-opacity-20 text-xs text-eda-green text-opacity-50 mt-14 md:mt-0">
                 <span className="flex items-center gap-2">
                     <Terminal size={12} /> EDA_RUNTIME v2.4.1
                 </span>
-                <span>CLK: 2GHz | PVT: TT/0.85V/25°C</span>
+                <span className="hidden sm:block">CLK: 2GHz | PVT: TT/0.85V/25°C</span>
                 <span className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-eda-green animate-pulse" />
-                    SYS_STATUS: NOMINAL
+                    <span className="hidden sm:inline">SYS_STATUS: </span>NOMINAL
                 </span>
             </div>
 
@@ -206,7 +206,7 @@ export default function HeroPost({ onBooted }) {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.6 }}
-                                className="flex items-center gap-3 my-3"
+                                className="flex flex-wrap items-center justify-center gap-3 my-3"
                                 style={{ userSelect: 'none' }}
                             >
                                 <span className="px-3 py-1 text-xs tracking-widest"
@@ -238,7 +238,7 @@ export default function HeroPost({ onBooted }) {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 1 }}
-                                className="flex gap-8 mt-8 text-center"
+                                className="flex gap-6 md:gap-8 mt-6 md:mt-8 text-center"
                                 style={{ userSelect: 'none' }}
                             >
                                 {[
@@ -299,9 +299,9 @@ export default function HeroPost({ onBooted }) {
             </div>
 
             {/* Bottom status bar */}
-            <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center px-8 py-2 border-t border-eda-green border-opacity-20 text-xs text-eda-green text-opacity-40">
+            <div className="absolute bottom-0 left-0 right-0 flex justify-between items-center px-4 md:px-8 py-2 border-t border-eda-green border-opacity-20 text-xs text-eda-green text-opacity-40">
                 <span>MODULE: HERO_POST.JSX</span>
-                <span>INST: revanth_nandamuri_v1</span>
+                <span className="hidden sm:block">INST: revanth_nandamuri_v1</span>
                 <span>LOC: VIT-AP → CADENCE</span>
             </div>
         </section>

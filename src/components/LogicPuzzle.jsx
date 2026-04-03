@@ -1491,6 +1491,8 @@ function LogicPuzzleContent() {
     const [edges, setEdges] = useState([]);
     const [testStatus, setTestStatus] = useState(null); // 'Equivalence' | 'Nonequivalence' | null
     const [gateCount, setGateCount] = useState(0);
+    // Tap-to-select state for mobile (also works as click-to-place on desktop)
+    const [selectedGateType, setSelectedGateType] = useState(null);
 
     const levelData = LEVELS[currentLevel];
 
@@ -1638,85 +1640,133 @@ function LogicPuzzleContent() {
         setNodes(LEVELS[currentLevel].initialNodes);
         setEdges([]);
         setTestStatus(null);
+        setSelectedGateType(null);
     };
 
-    const renderDragNode = (type) => (
-        <div
-            className="border border-eda-purple bg-eda-purple bg-opacity-10 py-1 flex flex-col items-center justify-center rounded cursor-grab active:cursor-grabbing hover:bg-opacity-20 transition-all box-border overflow-hidden"
-            onDragStart={(event) => {
-                event.dataTransfer.setData('application/reactflow', type);
-                event.dataTransfer.effectAllowed = 'move';
-            }}
-            draggable
-        >
-            <div className="scale-75 origin-center -mb-1 mt-1 opacity-70">
-                <GateSVG type={type} />
+    // Tap-to-place: place a gate at the clicked canvas position when a gate type is selected
+    const onPaneClick = useCallback((event) => {
+        if (!selectedGateType) return;
+        const position = screenToFlowPosition({
+            x: event.clientX,
+            y: event.clientY,
+        });
+        const newNode = {
+            id: uuidv4(),
+            type: 'logicGate',
+            position,
+            data: { type: selectedGateType, label: selectedGateType },
+        };
+        setNodes((nds) => nds.concat(newNode));
+        setSelectedGateType(null);
+    }, [selectedGateType, screenToFlowPosition, setNodes]);
+
+    const renderDragNode = (type) => {
+        const isSelected = selectedGateType === type;
+        return (
+            <div
+                key={type}
+                className="border bg-eda-purple bg-opacity-10 py-1 flex flex-col items-center justify-center rounded transition-all box-border overflow-hidden cursor-pointer"
+                style={{
+                    borderColor: isSelected ? '#BB86FC' : 'rgba(187,134,252,0.4)',
+                    boxShadow: isSelected ? '0 0 10px rgba(187,134,252,0.5)' : 'none',
+                    background: isSelected ? 'rgba(187,134,252,0.25)' : 'rgba(187,134,252,0.08)',
+                }}
+                onClick={() => setSelectedGateType(isSelected ? null : type)}
+                onDragStart={(event) => {
+                    event.dataTransfer.setData('application/reactflow', type);
+                    event.dataTransfer.effectAllowed = 'move';
+                    setSelectedGateType(null);
+                }}
+                draggable
+            >
+                <div className="scale-75 origin-center -mb-1 mt-1 opacity-70">
+                    <GateSVG type={type} />
+                </div>
+                <span className="text-[10px] font-bold text-eda-purple tracking-widest">{type}</span>
             </div>
-            <span className="text-[10px] font-bold text-eda-purple tracking-widest">{type}</span>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="flex flex-col h-full bg-[#030303] text-white select-none">
-            {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b border-eda-purple/20">
-                <div>
-                    <h2 className="text-xl font-bold text-eda-purple flex items-center gap-2">
+            {/* Header — stacks vertically on mobile */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 gap-2 border-b border-eda-purple/20">
+                <div className="min-w-0">
+                    <h2 className="text-sm sm:text-xl font-bold text-eda-purple truncate">
                         {levelData.name}
                     </h2>
-                    <p className="text-sm text-eda-blue font-mono mt-1 opacity-70">
-                        Target Equation: {levelData.equation} {levelData.desc && `| ${levelData.desc}`}
+                    <p className="text-xs text-eda-blue font-mono mt-0.5 opacity-70 truncate">
+                        {levelData.equation}{levelData.desc ? ` | ${levelData.desc}` : ''}
                     </p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-2">
                     <div className="text-xs font-mono text-eda-purple opacity-50">
-                        Gates Used: <span className={gateCount > 5 && currentLevel === 2 ? 'text-red-400' : 'text-eda-green'}>{gateCount}</span>
+                        Gates: <span className={gateCount > 5 && currentLevel === 2 ? 'text-red-400' : 'text-eda-green'}>{gateCount}</span>
                     </div>
 
                     <button
                         onClick={handleTest}
-                        className="text-sm border border-eda-green text-eda-green px-4 py-1.5 font-bold hover:bg-eda-green/10 transition-colors uppercase tracking-widest"
+                        className="text-xs sm:text-sm border border-eda-green text-eda-green px-3 py-1 sm:px-4 sm:py-1.5 font-bold hover:bg-eda-green/10 transition-colors uppercase tracking-widest"
                     >
                         Test
                     </button>
 
-                    <button onClick={resetBoard} className="text-xs border border-white/20 px-3 py-1 hover:bg-white/10 transition-colors">
+                    <button onClick={resetBoard} className="text-xs border border-white/20 px-2 py-1 hover:bg-white/10 transition-colors">
                         Reset
                     </button>
 
-                    <button 
-                        onClick={handleSolve} 
-                        className="text-xs border border-eda-blue text-eda-blue px-3 py-1 hover:bg-eda-blue/10 transition-colors"
+                    <button
+                        onClick={handleSolve}
+                        className="text-xs border border-eda-blue text-eda-blue px-2 py-1 hover:bg-eda-blue/10 transition-colors"
                         title="Show Optimal Configuration"
                     >
-                        Auto-Solve
+                        Solve
                     </button>
 
                     {testStatus === 'Equivalence' && currentLevel < LEVELS.length - 1 && (
                         <button
                             onClick={nextLevel}
-                            className="text-xs bg-eda-purple text-black font-bold px-4 py-1.5 hover:bg-purple-400 transition-colors"
+                            className="text-xs bg-eda-purple text-black font-bold px-3 py-1 hover:bg-purple-400 transition-colors"
                         >
-                            Next Module ▷
+                            Next ▷
                         </button>
                     )}
                 </div>
             </div>
 
-            <div className="flex flex-1 overflow-hidden relative">
-                {/* Sidebar */}
-                <div className="w-24 border-r border-eda-purple/20 bg-[#050505] p-3 flex flex-col gap-3 z-10 box-border items-stretch">
-                    <div className="text-[10px] text-gray-500 mb-2 uppercase tracking-widest text-center">Primitives</div>
-                    {renderDragNode('AND')}
-                    {renderDragNode('OR')}
-                    {renderDragNode('NAND')}
-                    {renderDragNode('NOR')}
-                    {renderDragNode('XOR')}
-                    {renderDragNode('NOT')}
+            {/* Tap hint for mobile — only shows when a gate is selected */}
+            {selectedGateType && (
+                <div className="bg-eda-purple/20 border-b border-eda-purple/30 text-center text-xs py-1.5 text-eda-purple font-mono">
+                    ✦ Tap canvas to place <span className="font-bold">{selectedGateType}</span> gate — tap gate again to deselect
+                </div>
+            )}
+
+            {/* Main area — column on mobile, row on desktop */}
+            <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative">
+
+                {/* ── Primitives bar — horizontal on mobile, vertical sidebar on desktop ── */}
+                <div className="
+                    flex flex-row md:flex-col
+                    overflow-x-auto md:overflow-x-visible
+                    w-full md:w-24
+                    h-[60px] md:h-auto
+                    border-b md:border-b-0 md:border-r
+                    border-eda-purple/20
+                    bg-[#050505]
+                    p-2 gap-2
+                    z-10 box-border flex-shrink-0
+                ">
+                    <div className="hidden md:block text-[10px] text-gray-500 mb-1 uppercase tracking-widest text-center flex-shrink-0">Primitives</div>
+                    <div className="text-[9px] text-gray-500 md:hidden uppercase tracking-widest self-center flex-shrink-0 pr-1 opacity-60">Gates:</div>
+                    {['AND', 'OR', 'NAND', 'NOR', 'XOR', 'NOT'].map(type => (
+                        <div key={type} className="flex-shrink-0 w-[52px] md:w-auto">
+                            {renderDragNode(type)}
+                        </div>
+                    ))}
                 </div>
 
-                {/* Canvas */}
-                <div className="flex-1 h-[500px] relative pointer-events-auto" ref={reactFlowWrapper}>
+                {/* ── Canvas ── */}
+                <div className="flex-1 relative pointer-events-auto min-h-[300px] md:min-h-0" ref={reactFlowWrapper}>
                     <ReactFlow
                         nodes={nodes}
                         edges={edges}
@@ -1727,20 +1777,22 @@ function LogicPuzzleContent() {
                         onDragOver={onDragOver}
                         onNodeDoubleClick={onNodeDoubleClick}
                         onEdgeDoubleClick={onEdgeDoubleClick}
+                        onPaneClick={onPaneClick}
                         nodeTypes={nodeTypes}
-                        
-                        // Board locking mechanism
+
+                        // Board locking — allow pan on touch so users can drag nodes
                         panOnDrag={false}
                         zoomOnScroll={false}
                         zoomOnDoubleClick={false}
                         zoomOnPinch={false}
                         panOnScroll={false}
                         preventScrolling={false}
-                        
+
                         fitView
                         fitViewOptions={{ padding: 0.0 }}
                         proOptions={{ hideAttribution: true }}
                         className="bg-black"
+                        style={{ cursor: selectedGateType ? 'crosshair' : undefined }}
                     >
                         <Background color="#BB86FC" gap={20} size={1} opacity={0.15} />
                         <Controls showZoom={false} showInteractive={false} className="opacity-0 pointer-events-none" />
@@ -1753,13 +1805,13 @@ function LogicPuzzleContent() {
                                 initial={{ opacity: 0, scale: 0.9, y: -20 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                                className={`absolute top-6 left-1/2 -translate-x-1/2 border px-6 py-3 rounded backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)] z-20 pointer-events-none ${
-                                    testStatus === 'Equivalence' 
+                                className={`absolute top-4 left-1/2 -translate-x-1/2 border px-4 sm:px-6 py-2 sm:py-3 rounded backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)] z-20 pointer-events-none ${
+                                    testStatus === 'Equivalence'
                                         ? 'border-eda-green bg-eda-green/10 text-eda-green shadow-[0_0_15px_rgba(0,255,65,0.2)]'
                                         : 'border-red-500 bg-red-500/10 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]'
                                 }`}
                             >
-                                <h3 className="font-bold text-lg uppercase tracking-wider text-center">
+                                <h3 className="font-bold text-base sm:text-lg uppercase tracking-wider text-center">
                                     {testStatus}
                                 </h3>
                                 <p className="text-xs opacity-70 font-mono text-center">
@@ -1770,9 +1822,21 @@ function LogicPuzzleContent() {
                     </AnimatePresence>
                 </div>
 
-                {/* Level Selector Sidebar - RIGHT */}
-                <div className="w-32 border-l border-eda-purple/20 bg-[#050505] p-3 flex flex-col gap-2 z-10 box-border overflow-y-auto">
-                    <div className="text-[10px] text-gray-500 mb-2 uppercase tracking-widest text-center">Modules</div>
+                {/* ── Level Selector — horizontal on mobile, vertical sidebar on desktop ── */}
+                <div className="
+                    flex flex-row md:flex-col
+                    overflow-x-auto md:overflow-x-visible
+                    w-full md:w-32
+                    h-[44px] md:h-auto
+                    border-t md:border-t-0 md:border-l
+                    border-eda-purple/20
+                    bg-[#050505]
+                    p-2 gap-2
+                    z-10 box-border flex-shrink-0
+                    items-center md:items-stretch
+                ">
+                    <div className="hidden md:block text-[10px] text-gray-500 mb-1 uppercase tracking-widest text-center">Modules</div>
+                    <div className="text-[9px] text-gray-500 md:hidden uppercase tracking-widest self-center flex-shrink-0 pr-1 opacity-60">Level:</div>
                     {LEVELS.map((lvl, index) => (
                         <button
                             key={lvl.level}
@@ -1781,10 +1845,11 @@ function LogicPuzzleContent() {
                                 setNodes(LEVELS[index].initialNodes);
                                 setEdges([]);
                                 setTestStatus(null);
+                                setSelectedGateType(null);
                             }}
-                            className={`text-left text-[11px] font-bold tracking-widest py-3 px-3 rounded transition-all border ${
-                                currentLevel === index 
-                                    ? 'bg-eda-purple text-black border-eda-purple' 
+                            className={`flex-shrink-0 text-[11px] font-bold tracking-widest py-1.5 md:py-3 px-3 rounded transition-all border ${
+                                currentLevel === index
+                                    ? 'bg-eda-purple text-black border-eda-purple'
                                     : 'bg-transparent text-eda-purple border-eda-purple/20 hover:bg-eda-purple/10'
                             }`}
                             title={lvl.name}

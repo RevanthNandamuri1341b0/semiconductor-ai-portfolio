@@ -490,7 +490,7 @@ export default function FloorplanGallery() {
     return (
         <section
             id="floorplan"
-            className="min-h-screen py-24 pl-[190px] md:pl-[220px] relative"
+            className="min-h-screen py-24 pl-0 md:pl-[220px] relative"
             style={{ background: 'linear-gradient(to bottom, #050505, #050a05, #050505)' }}
         >
             <div className="absolute inset-0 floorplan-grid opacity-20" />

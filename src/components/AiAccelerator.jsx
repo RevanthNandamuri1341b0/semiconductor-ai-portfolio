@@ -5,7 +5,7 @@ export default function AiAccelerator() {
     return (
         <section
             id="ip"
-            className="min-h-screen py-24 pl-[190px] md:pl-[220px] relative flex flex-col items-center justify-center"
+            className="min-h-screen py-24 pl-0 md:pl-[220px] relative flex flex-col items-center justify-center"
             style={{ background: 'linear-gradient(to bottom, #050505, #070010, #050505)' }}
         >
             <div className="absolute inset-0 floorplan-grid opacity-10 pointer-events-none" />

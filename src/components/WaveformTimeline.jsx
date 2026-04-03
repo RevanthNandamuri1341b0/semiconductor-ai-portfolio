@@ -101,7 +101,7 @@ export default function WaveformTimeline() {
     return (
         <section
             id="waveform"
-            className="min-h-screen py-24 pl-[190px] md:pl-[220px] relative overflow-hidden"
+            className="min-h-screen py-24 pl-0 md:pl-[220px] relative overflow-hidden"
             style={{ background: 'linear-gradient(to bottom, #050505, #030508, #050505)' }}
         >
             <div className="absolute inset-0 floorplan-grid opacity-20" />
@@ -143,7 +143,7 @@ export default function WaveformTimeline() {
                             ))}
                         </div>
                         <span className="text-xs opacity-40 ml-2">gtkwave — cadence_career_sim.vcd</span>
-                        <div className="ml-auto flex gap-4 text-xs opacity-30">
+                        <div className="hidden sm:flex ml-auto gap-4 text-xs opacity-30">
                             <span>Zoom: 100%</span>
                             <span>Cursor: {cursorYear ? cursorYear.toFixed(2) : '--'}</span>
                             <span>Time: 2022–2026</span>
@@ -153,7 +153,7 @@ export default function WaveformTimeline() {
                     {/* Signal pane + waveform area */}
                     <div className="flex">
                         {/* Signal names (left panel) */}
-                        <div className="border-r flex-shrink-0" style={{ width: '160px', borderColor: 'rgba(0,255,65,0.15)' }}>
+                        <div className="border-r flex-shrink-0 w-20 md:w-40" style={{ borderColor: 'rgba(0,255,65,0.15)' }}>
                             <div className="h-8 border-b flex items-center px-2"
                                 style={{ borderColor: 'rgba(0,255,65,0.15)', background: 'rgba(0,0,0,0.3)' }}>
                                 <span className="text-xs opacity-30">SIGNAL</span>

@@ -81,7 +81,7 @@ export default function RegisterMapContact() {
     return (
         <section
             id="contact"
-            className="min-h-screen py-24 pl-[190px] md:pl-[220px] relative"
+            className="min-h-screen py-24 pl-0 md:pl-[220px] relative"
             style={{ background: 'linear-gradient(to bottom, #050505, #030505, #050505)' }}
         >
             <div className="absolute inset-0 floorplan-grid opacity-20" />
@@ -117,7 +117,7 @@ export default function RegisterMapContact() {
                     <div className="text-xs tracking-widest mb-4" style={{ color: 'rgba(0,255,65,0.4)', userSelect: 'none' }}>
                         // DIRECT_ACCESS_PORTS
                     </div>
-                    <div className="grid grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                         {DIRECT_LINKS.map(({ href, icon: Icon, label, value, color, external }) => (
                             <a
                                 key={label}

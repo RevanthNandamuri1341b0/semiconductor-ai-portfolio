@@ -173,7 +173,7 @@ export default function SynthesisFlow() {
         <section
             id="synthesis"
             ref={sectionRef}
-            className="min-h-screen py-24 pl-[190px] md:pl-[220px] relative"
+            className="min-h-screen py-24 pl-0 md:pl-[220px] relative"
             style={{ background: 'linear-gradient(to bottom, #050505, #030810, #050505)' }}
         >
             {/* Background grid */}

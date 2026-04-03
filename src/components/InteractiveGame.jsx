@@ -5,7 +5,7 @@ export default function InteractiveGame() {
     return (
         <section
             id="game"
-            className="min-h-screen py-24 pl-[190px] md:pl-[220px] relative"
+            className="min-h-screen py-24 pl-0 md:pl-[220px] relative"
             style={{ background: 'linear-gradient(to bottom, #050505, #070010, #050505)' }}
         >
             <div className="absolute inset-0 floorplan-grid opacity-10 pointer-events-none" />
@@ -29,7 +29,7 @@ export default function InteractiveGame() {
                         Interactive Hardware Puzzle
                     </h2>
                     <p className="text-sm text-eda-blue opacity-60 mt-2" style={{ userSelect: 'none' }}>
-                        // Drag logic primitives onto the canvas to construct a circuit that satisfies the boolean equation.&nbsp;
+                        // Tap a gate to select it, then tap the canvas to place it. On desktop you can also drag gates onto the canvas.&nbsp;
                         Double-click any gate or wire to delete it.
                     </p>
                 </motion.div>
@@ -43,9 +43,8 @@ export default function InteractiveGame() {
                 >
                     {/* Card */}
                     <div
-                        className="relative w-full border"
+                        className="relative w-full border h-[680px] md:h-[560px]"
                         style={{
-                            height: '560px',
                             borderColor: 'rgba(187,134,252,0.3)',
                             background: '#030303',
                             boxShadow: '0 0 40px rgba(187,134,252,0.15)',
