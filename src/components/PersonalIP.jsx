@@ -5,7 +5,7 @@ export default function PersonalIP() {
     return (
         <section
             id="personal"
-            className="py-24 pl-[190px] md:pl-[220px] relative"
+            className="py-24 pl-4 md:pl-[220px] relative"
             style={{ background: 'linear-gradient(to bottom, #050505, #030a05, #050505)' }}
         >
             <div className="absolute inset-0 floorplan-grid opacity-15 pointer-events-none" />
