@@ -55,11 +55,16 @@ export default function PersonalChipDie() {
     const [runCount, setRunCount]     = useState(0);
     const [step, setStep]             = useState(-1);
     const [mode, setMode]             = useState('all');
+    const [glowing, setGlowing]       = useState(false);
 
     const runPersonality = () => {
         if (running) return;
-        setRunning(true); setActiveSet(new Set()); setActiveWires(new Set());
-        setRunCount(c => c + 1); setStep(0);
+        // If already glowing, flash dark first then re-run
+        const delay = glowing ? 300 : 0;
+        setGlowing(false);
+        setActiveSet(new Set()); setActiveWires(new Set()); setStep(-1);
+        setRunning(true);
+        setRunCount(c => c + 1);
 
         SEQ.forEach((id, i) => {
             setTimeout(() => {
@@ -73,12 +78,13 @@ export default function PersonalChipDie() {
                         return prev;
                     });
                 });
-            }, i * 280);
+            }, delay + i * 280);
         });
 
-        const total = SEQ.length * 280;
+        const total = delay + SEQ.length * 280;
         setTimeout(() => setActiveWires(new Set(WIRES.map(w => w.id))), total);
-        setTimeout(() => { setRunning(false); setActiveSet(new Set()); setActiveWires(new Set()); setStep(-1); }, total + 900);
+        // Stay glowing — do not clear activeSet/activeWires
+        setTimeout(() => { setRunning(false); setStep(-1); setGlowing(true); }, total + 200);
     };
 
     const displayBlock = hovered ? BM[hovered] : step >= 0 ? BM[SEQ[step]] : null;

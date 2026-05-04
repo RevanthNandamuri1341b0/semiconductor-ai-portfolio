@@ -41,9 +41,10 @@ const EXPERIENCES = [
         endYear: 2026.17, // Present (2026.17 ≈ Mar 2026)
         color: '#BB86FC',
         details: [
+            'Ramped up on Conformal Equivalence Checking and began supporting global customers',
             'Customer enablement for Genus Synthesis and Joules RTL Power',
             'Deployed bottom-up flows for large hierarchical designs',
-            'Resolved 300+ synthesis & power cases globally',
+            'Resolved 300+ synthesis, power & logic equivalence cases globally',
             'Conducts training programs for global teams',
         ],
         period: 'Nov 2023 – Present',

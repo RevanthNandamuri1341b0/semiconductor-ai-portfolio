@@ -227,10 +227,10 @@ export default function HeroPost({ onBooted }) {
                                 className="mt-4 max-w-2xl text-sm leading-relaxed text-center"
                                 style={{ color: 'rgba(0,255,65,0.65)', userSelect: 'none' }}
                             >
-                                Senior Application Engineer at Cadence Design Systems with 2+ years in RTL Synthesis and RTL Power Estimation.
-                                Enables global customers on&nbsp;
-                                <span style={{ color: '#00D1FF' }}>Genus</span> and <span style={{ color: '#00D1FF' }}>Joules</span>,
-                                delivers trainings, writes AppNotes, and debugs complex synthesis/power issues rapidly.
+                                Senior Application Engineer at Cadence Design Systems with 2+ years of experience in Synthesis, RTL Power Estimation, and Conformal Equivalence Checking.
+                                Supports global customers on&nbsp;
+                                <span style={{ color: '#00D1FF' }}>Genus</span>, <span style={{ color: '#00D1FF' }}>Joules</span>, and <span style={{ color: '#00D1FF' }}>Conformal</span>,
+                                delivering technical trainings, authoring AppNotes, and resolving complex synthesis, power, and logic equivalence issues with speed and precision.
                             </motion.p>
 
                             {/* Stats row */}
