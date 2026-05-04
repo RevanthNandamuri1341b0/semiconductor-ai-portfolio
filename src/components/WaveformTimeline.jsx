@@ -13,7 +13,7 @@ const EXPERIENCES = [
         details: [
             'Assisted with RTL synthesis and power analysis worldwide',
             'Supported Genus Synthesis flows across global customers',
-            'Developed expertise in SystemVerilog and Tcl scripting',
+            'Developed expertise in Verilog and Tcl scripting.',
         ],
         period: 'Sep 2022 – Jun 2023',
     },
@@ -43,7 +43,7 @@ const EXPERIENCES = [
         details: [
             'Ramped up on Conformal Equivalence Checking and began supporting global customers',
             'Customer enablement for Genus Synthesis and Joules RTL Power',
-            'Deployed bottom-up flows for large hierarchical designs',
+            'Implemented bottom-up flows for large hierarchical designs',
             'Resolved 300+ synthesis, power & logic equivalence cases globally',
             'Conducts training programs for global teams',
         ],
