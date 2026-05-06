@@ -103,6 +103,8 @@ const InputNode = ({ data }) => {
     return (
         <div className="relative flex items-center justify-start h-8 w-10 cursor-default select-none">
             <svg width="40" height="32" viewBox="0 0 40 32" className="absolute inset-0 overflow-visible drop-shadow-[0_0_6px_rgba(0,255,65,0.3)]">
+                {/* Border rail line extending left to canvas edge */}
+                <line x1="-2000" y1="16" x2="0" y2="16" stroke="#00FF41" strokeWidth="1" opacity="0.25" strokeDasharray="4 4" />
                 <path d="M 0 0 L 25 0 L 35 16 L 25 32 L 0 32 Z" fill="rgba(0,255,65,0.15)" stroke="#00FF41" strokeWidth="2" />
                 <text x="10" y="21" fill="#00FF41" fontSize="14" fontWeight="bold" fontFamily="monospace">{data.label}</text>
             </svg>
@@ -116,6 +118,8 @@ const OutputNode = ({ data }) => {
         <div className="relative flex items-center justify-end h-8 w-10 cursor-default select-none">
             <Handle type="target" position={Position.Left} id="in" className="w-2 h-2 bg-eda-blue rounded-full border-none" style={{ left: '-3px' }} />
             <svg width="40" height="32" viewBox="0 0 40 32" className="absolute inset-0 overflow-visible drop-shadow-[0_0_6px_rgba(0,209,255,0.3)]">
+                {/* Border rail line extending right to canvas edge */}
+                <line x1="40" y1="16" x2="2040" y2="16" stroke="#00D1FF" strokeWidth="1" opacity="0.25" strokeDasharray="4 4" />
                 <path d="M 5 16 L 15 0 L 40 0 L 40 32 L 15 32 Z" fill="rgba(0,209,255,0.15)" stroke="#00D1FF" strokeWidth="2" />
                 <text x="18" y="21" fill="#00D1FF" fontSize="14" fontWeight="bold" fontFamily="monospace">{data.label}</text>
             </svg>
@@ -1484,7 +1488,7 @@ const LEVELS = [
 ];
 
 function LogicPuzzleContent() {
-    const { screenToFlowPosition } = useReactFlow();
+    const { screenToFlowPosition, fitView } = useReactFlow();
     const reactFlowWrapper = useRef(null);
     const [currentLevel, setCurrentLevel] = useState(0);
     const [nodes, setNodes] = useState(LEVELS[0].initialNodes);
@@ -1502,6 +1506,12 @@ function LogicPuzzleContent() {
         let currentGates = nodes.filter(n => n.type === 'logicGate').length;
         setGateCount(currentGates);
     }, [nodes, edges]);
+
+    // Refit view when level changes so ports stay near edges
+    useEffect(() => {
+        const timer = setTimeout(() => fitView({ padding: 0.06 }), 50);
+        return () => clearTimeout(timer);
+    }, [currentLevel, fitView]);
 
     const onNodesChange = useCallback(
         (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -1767,6 +1777,12 @@ function LogicPuzzleContent() {
 
                 {/* ── Canvas ── */}
                 <div className="flex-1 relative pointer-events-auto min-h-[300px] md:min-h-0" ref={reactFlowWrapper}>
+                    {/* Input port border rail */}
+                    <div className="absolute left-0 top-0 bottom-0 w-px z-10 pointer-events-none"
+                        style={{ background: 'linear-gradient(to bottom, transparent, rgba(0,255,65,0.4) 20%, rgba(0,255,65,0.4) 80%, transparent)' }} />
+                    {/* Output port border rail */}
+                    <div className="absolute right-0 top-0 bottom-0 w-px z-10 pointer-events-none"
+                        style={{ background: 'linear-gradient(to bottom, transparent, rgba(0,209,255,0.4) 20%, rgba(0,209,255,0.4) 80%, transparent)' }} />
                     <ReactFlow
                         nodes={nodes}
                         edges={edges}
@@ -1780,16 +1796,22 @@ function LogicPuzzleContent() {
                         onPaneClick={onPaneClick}
                         nodeTypes={nodeTypes}
 
-                        // Board locking — allow pan on touch so users can drag nodes
+                        // Board fully locked — no pan, no zoom
                         panOnDrag={false}
                         zoomOnScroll={false}
                         zoomOnDoubleClick={false}
                         zoomOnPinch={false}
                         panOnScroll={false}
-                        preventScrolling={false}
+                        preventScrolling={true}
 
+                        // Fit view with padding so ports sit near the edges
                         fitView
-                        fitViewOptions={{ padding: 0.0 }}
+                        fitViewOptions={{ padding: 0.06 }}
+
+                        // Smoother wire routing
+                        connectionLineType="smoothstep"
+                        defaultEdgeOptions={{ type: 'smoothstep', animated: true, style: { stroke: '#BB86FC' } }}
+
                         proOptions={{ hideAttribution: true }}
                         className="bg-black"
                         style={{ cursor: selectedGateType ? 'crosshair' : undefined }}
